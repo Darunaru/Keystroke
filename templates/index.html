@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Keystroke Capture</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f2f2f2;
+            margin: 0;
+            padding: 0;
+            background-image: url("https://example.com/background.jpg");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease;
+        }
+
+        .container:hover {
+            transform: scale(1.05);
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+            font-size: 24px;
+            margin-bottom: 30px;
+            animation: color-change 5s infinite;
+        }
+
+        @keyframes color-change {
+            0% { color: #FF6347; }
+            25% { color: #FFD700; }
+            50% { color: #3CB371; }
+            75% { color: #87CEEB; }
+            100% { color: #FF6347; }
+        }
+
+        form {
+            margin-top: 20px;
+        }
+
+        label {
+            display: block;
+            margin-top: 10px;
+            color: #555;
+            font-size: 16px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        input[type="text"]:focus {
+            border-color: #4CAF50;
+        }
+
+        .submit-button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            margin-top: 20px;
+            border-radius: 3px;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+
+        .submit-button:hover {
+            background-color: #45a049;
+        }
+    </style>
+    <script>
+        var keystrokes = [];
+        var startTime;
+
+        document.addEventListener('keydown', function(event) {
+            if (!startTime) {
+                startTime = Date.now();
+            }
+            keystrokes.push({
+                key: event.key,
+                action: 'press',
+                time: Date.now() - startTime
+            });
+        });
+
+        document.addEventListener('keyup', function(event) {
+            if (!startTime) {
+                startTime = Date.now();
+            }
+            keystrokes.push({
+                key: event.key,
+                action: 'release',
+                time: Date.now() - startTime
+            });
+        });
+
+        function submitForm() {
+            var username = document.getElementById('username').value;
+            var email = document.getElementById('email').value;
+
+            // Convert keystrokes array to JSON string
+            var keystrokesJSON = JSON.stringify(keystrokes);
+
+            // Set the value of the 'keystrokes' input field to the JSON string
+            document.getElementById('keystrokes').value = keystrokesJSON;
+
+            // Submit the form
+            document.getElementById('form').submit();
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1><i class="fas fa-keyboard"></i> Keystroke Capture</h1>
+        <form id="form" action="/submit" method="post">
+            <div>
+                <label for="email"><i class="fas fa-envelope"></i> Email:</label>
+                <input type="text" id="email" name="email">
+            </div>
+            <div>
+                <label for="username"><i class="fas fa-user"></i> Password:</label>
+                <input type="text" id="username" name="username">
+            </div>
+            <!-- Hidden input field to store keystrokes -->
+            <input type="hidden" id="keystrokes" name="keystrokes">
+            <input class="submit-button" type="button" value="Submit" onclick="submitForm()">
+        </form>
+    </div>
+</body>
+</html>
